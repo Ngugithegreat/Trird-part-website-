@@ -1,57 +1,68 @@
 'use client';
 
-import React, { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useUserStore } from '@/store/useStore';
-import { Loader2 } from 'lucide-react';
-
-function CallbackContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const setAuth = useUserStore((state) => state.setAuth);
-
-  useEffect(() => {
-    const token = searchParams.get('token1');
-    const account = searchParams.get('acct1');
-    const currency = searchParams.get('cur1');
-
-    if (token && account) {
-      localStorage.setItem('deriv_token', token);
-      setAuth({
-        token,
-        account,
-        currency: currency || 'USD',
-      });
-      
-      // Delay slightly for dramatic effect and state persistence
-      setTimeout(() => {
-        router.push('/dashboard/trade');
-      }, 1500);
-    } else {
-      router.push('/');
-    }
-  }, [searchParams, setAuth, router]);
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-6">
-      <div className="relative">
-        <Loader2 className="w-16 h-16 text-primary animate-spin" />
-        <div className="absolute inset-0 blur-xl bg-primary/20 rounded-full animate-pulse"></div>
-      </div>
-      <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Connecting Your Account</h2>
-        <p className="text-muted-foreground animate-pulse">Synchronizing with Deriv secure gateway...</p>
-      </div>
-    </div>
-  );
-}
+import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useStore } from '@/store/useStore';
 
 export default function CallbackPage() {
+  const router = useRouter();
+  const { setAuth } = useStore();
+  const initialized = useRef(false);
+  
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token1');
+    const account = params.get('acct1');
+    const currency = params.get('cur1');
+    
+    if (!token) {
+      router.push('/');
+      return;
+    }
+    
+    const ws = new WebSocket(
+      `wss://ws.derivws.com/websockets/v3?app_id=${process.env.NEXT_PUBLIC_DERIV_APP_ID}`
+    );
+
+    ws.onopen = () => ws.send(JSON.stringify({ authorize: token }));
+
+    ws.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.msg_type === 'authorize' && !data.error) {
+        setAuth({
+          token,
+          account: account || data.authorize.loginid,
+          currency: currency || data.authorize.currency,
+          balance: data.authorize.balance,
+          email: data.authorize.email,
+          fullname: data.authorize.fullname,
+        });
+        localStorage.setItem('deriv_token', token);
+        ws.close();
+        router.push('/dashboard');
+      } else if (data.error) {
+        ws.close();
+        router.push('/?error=auth_failed');
+      }
+    };
+
+    ws.onerror = () => router.push('/?error=connection_failed');
+
+    return () => {
+      if (ws.readyState === WebSocket.OPEN) ws.close();
+    };
+  }, [router, setAuth]);
+  
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-      <Suspense fallback={<div>Loading environment...</div>}>
-        <CallbackContent />
-      </Suspense>
+    <div className="min-h-screen bg-[#080b12] flex flex-col items-center justify-center gap-6">
+      <div className="w-12 h-12 border-[3px] border-[#00e676] border-t-transparent rounded-full animate-spin" />
+      <div className="text-center">
+        <h2 className="text-white font-bold text-xl mb-1 tracking-tight">Authenticating Account</h2>
+        <p className="text-[#8892a4] text-sm animate-pulse">Establishing secure connection with Deriv...</p>
+      </div>
     </div>
   );
 }
