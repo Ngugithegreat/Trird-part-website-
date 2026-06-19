@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { DERIV_OAUTH_URL } from '@/lib/deriv';
+import { getOAuthURL } from '@/lib/deriv';
 import { Button } from '@/components/ui/button';
 import { LineChart, BarChart3, Bot, Zap, ShieldCheck, ArrowRight } from 'lucide-react';
 
@@ -47,7 +47,7 @@ export default function LandingPage() {
           <Button 
             size="lg" 
             className="h-14 px-8 text-lg font-bold bg-primary hover:bg-primary/90 text-background group shadow-[0_10px_40px_rgba(0,230,118,0.2)]"
-            onClick={() => window.location.href = DERIV_OAUTH_URL}
+            onClick={() => window.location.href = getOAuthURL()}
           >
             Login with Deriv
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

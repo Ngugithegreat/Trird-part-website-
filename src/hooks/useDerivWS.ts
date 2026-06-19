@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { useUserStore, useTradingStore } from '@/store/useStore';
-import { getDerivWSUrl } from '@/lib/deriv';
 import { VOLATILITY_INDICES } from '@/lib/symbols';
 
 export function useDerivWS() {
@@ -14,7 +13,8 @@ export function useDerivWS() {
   const connect = useCallback(() => {
     if (ws.current?.readyState === WebSocket.OPEN) return;
 
-    const socket = new WebSocket(getDerivWSUrl());
+    const WS_URL = `wss://ws.derivws.com/websockets/v3?app_id=${process.env.NEXT_PUBLIC_DERIV_APP_ID}`;
+    const socket = new WebSocket(WS_URL);
 
     socket.onopen = () => {
       console.log('Deriv WS Connected');
