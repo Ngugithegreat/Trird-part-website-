@@ -4,7 +4,8 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useStore } from '@/store/useStore';
 import { SYMBOLS } from '@/lib/deriv';
 
-const WS_URL = `wss://ws.derivws.com/websockets/v3?app_id=${process.env.NEXT_PUBLIC_DERIV_APP_ID}`;
+const APP_ID = process.env.NEXT_PUBLIC_DERIV_APP_ID || '108227';
+const WS_URL = `wss://ws.derivws.com/websockets/v3?app_id=${APP_ID}`;
 
 export function useDerivWS() {
   const ws = useRef<WebSocket | null>(null);

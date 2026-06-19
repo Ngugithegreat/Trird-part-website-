@@ -97,7 +97,9 @@ export default function LandingPage() {
   }, []);
 
   const handleLogin = () => {
-    window.location.href = getOAuthURL();
+    const url = getOAuthURL();
+    console.log('OAuth URL:', url);
+    window.location.href = url;
   };
 
   return (
