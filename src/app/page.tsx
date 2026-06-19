@@ -98,7 +98,9 @@ export default function LandingPage() {
 
   const handleLogin = () => {
     const url = getOAuthURL();
-    console.log('OAuth URL:', url);
+    console.log('=== OAUTH URL ===', url);
+    // Verification alert - remove after testing
+    alert('Redirecting to: ' + url);
     window.location.href = url;
   };
 

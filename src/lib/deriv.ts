@@ -4,6 +4,8 @@ const REDIRECT_URI = process.env.NEXT_PUBLIC_DERIV_REDIRECT_URI;
 export const getOAuthURL = (): string => {
   const appId = APP_ID || '108227';
   const redirectUri = REDIRECT_URI || 'https://trade.nairobiforextraders.com/callback';
+  
+  // MUST be oauth.deriv.com — NOT home.deriv.com
   return `https://oauth.deriv.com/oauth2/authorize?app_id=${appId}&l=en&brand=deriv&redirect_uri=${encodeURIComponent(redirectUri)}`;
 };
 
