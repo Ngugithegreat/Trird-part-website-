@@ -40,10 +40,15 @@ interface Store {
 export const useStore = create<Store>()(
   persist(
     (set) => ({
-      auth: null,
+      auth: typeof window !== 'undefined' 
+        ? JSON.parse(localStorage.getItem('deriv_auth') || 'null')
+        : null,
       setAuth: (auth) => set({ auth }),
       clearAuth: () => { 
         localStorage.removeItem('deriv_token');
+        localStorage.removeItem('deriv_auth');
+        localStorage.removeItem('deriv_account');
+        localStorage.removeItem('deriv_currency');
         set({ auth: null }); 
       },
       connected: false,

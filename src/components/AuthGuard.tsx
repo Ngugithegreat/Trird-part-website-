@@ -9,8 +9,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { auth } = useStore();
   
   useEffect(() => {
-    const token = localStorage.getItem('deriv_token');
-    if (!auth && !token) {
+    const saved = localStorage.getItem('deriv_auth');
+    if (!auth && !saved) {
       router.push('/');
     }
   }, [auth, router]);
