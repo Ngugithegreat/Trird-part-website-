@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { getOAuthURL, SYMBOLS } from '@/lib/deriv';
 import { useStore } from '@/store/useStore';
-import { Zap, TrendingUp, Bot, ShieldCheck, ArrowRight, Layers, Search, Rocket } from 'lucide-react';
+import { Zap, TrendingUp, Bot, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export default function LandingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -97,12 +97,10 @@ export default function LandingPage() {
   }, []);
 
   const handleLogin = () => {
-    const url = getOAuthURL();
-    console.log('=== OAUTH URL ===', url);
-    // Verification alert - remove after testing
-    alert('Redirecting to: ' + url);
-    window.location.href = url;
-  };
+    const url = getOAuthURL()
+    console.log('Redirecting to:', url)
+    window.location.assign(url)
+  }
 
   return (
     <div className="relative min-h-screen bg-[#080b12] overflow-x-hidden flex flex-col">

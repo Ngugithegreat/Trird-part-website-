@@ -1,13 +1,13 @@
-const APP_ID = process.env.NEXT_PUBLIC_DERIV_APP_ID;
-const REDIRECT_URI = process.env.NEXT_PUBLIC_DERIV_REDIRECT_URI;
-
-export const getOAuthURL = (): string => {
-  const appId = APP_ID || '108227';
-  const redirectUri = REDIRECT_URI || 'https://trade.nairobiforextraders.com/callback';
-  
-  // MUST be oauth.deriv.com — NOT home.deriv.com
-  return `https://oauth.deriv.com/oauth2/authorize?app_id=${appId}&l=en&brand=deriv&redirect_uri=${encodeURIComponent(redirectUri)}`;
-};
+export function getOAuthURL(): string {
+  const appId = process.env.NEXT_PUBLIC_DERIV_APP_ID || '108227'
+  const redirectUri = process.env.NEXT_PUBLIC_DERIV_REDIRECT_URI 
+    || 'https://trade.nairobiforextraders.com/callback'
+  const url = 'https://oauth.deriv.com/oauth2/authorize?app_id=' 
+    + appId 
+    + '&l=en&brand=deriv&redirect_uri=' 
+    + encodeURIComponent(redirectUri)
+  return url
+}
 
 export const SYMBOLS = [
   { id: 'R_10',    label: 'Volatility 10',      short: 'V10',   pip: 3 },
