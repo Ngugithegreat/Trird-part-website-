@@ -1,12 +1,17 @@
 export function getOAuthURL(): string {
-  const appId = process.env.NEXT_PUBLIC_DERIV_APP_ID || '108227'
-  const redirectUri = process.env.NEXT_PUBLIC_DERIV_REDIRECT_URI 
-    || 'https://trade.nairobiforextraders.com/callback'
-  const url = 'https://oauth.deriv.com/oauth2/authorize?app_id=' 
-    + appId 
-    + '&l=en&brand=deriv&redirect_uri=' 
-    + encodeURIComponent(redirectUri)
-  return url
+  const appId = process.env.NEXT_PUBLIC_DERIV_APP_ID || '108227';
+  const redirectUri =
+    process.env.NEXT_PUBLIC_DERIV_REDIRECT_URI ||
+    'https://trade.nairobiforextraders.com/callback';
+
+  const params = new URLSearchParams({
+    app_id: appId,
+    l: 'en',
+    brand: 'deriv',
+    redirect_uri: redirectUri,
+  });
+
+  return `https://oauth.deriv.com/oauth2/authorize?${params.toString()}`;
 }
 
 export const SYMBOLS = [

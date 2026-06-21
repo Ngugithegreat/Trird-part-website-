@@ -96,10 +96,8 @@ export default function LandingPage() {
     };
   }, []);
 
-  const handleLogin = () => {
-    const url = getOAuthURL()
-    console.log('Redirecting to:', url)
-    window.location.assign(url)
+  function handleLogin() {
+    window.location.assign(getOAuthURL());
   }
 
   return (
