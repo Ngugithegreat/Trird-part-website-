@@ -36,7 +36,7 @@ export const SYMBOLS = [
   { id: '1HZ25V',  label: 'Volatility 25 (1s)', short: 'V25s',  pip: 3 },
   { id: '1HZ50V',  label: 'Volatility 50 (1s)', short: 'V50s',  pip: 2 },
   { id: '1HZ75V',  label: 'Volatility 75 (1s)', short: 'V75s',  pip: 2 },
-  { id: '1HZ100V', label: 'Volatility 100 (1s)', short: 'V100s', pip: 2 },
+  { id: '1HZ100V', label: 'Volatility 100 (1s)','short': 'V100s', pip: 2 },
 ];
 
 export const GRANULARITIES = [
