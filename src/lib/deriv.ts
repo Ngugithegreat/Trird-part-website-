@@ -6,6 +6,9 @@ export async function startDerivLogin(): Promise<void> {
     process.env.NEXT_PUBLIC_DERIV_REDIRECT_URI ||
     'https://trade.nairobiforextraders.com/callback';
 
+  console.log('CLIENT_ID being used:', clientId);
+  console.log('REDIRECT_URI being used:', redirectUri);
+
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = await generateCodeChallenge(codeVerifier);
   const state = generateState();
@@ -23,7 +26,10 @@ export async function startDerivLogin(): Promise<void> {
     code_challenge_method: 'S256',
   });
 
-  window.location.assign(`https://auth.deriv.com/oauth2/auth?${params.toString()}`);
+  const fullUrl = `https://auth.deriv.com/oauth2/auth?${params.toString()}`;
+  console.log('FULL OAUTH URL:', fullUrl);
+  alert(fullUrl);  // TEMPORARY - shows us the exact URL before redirecting
+  window.location.assign(fullUrl);
 }
 
 export const SYMBOLS = [
