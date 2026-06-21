@@ -36,5 +36,3 @@ export const GRANULARITIES = [
   { value: 14400, label: '4h' },
   { value: 86400, label: '1D' },
 ];
-
-export const getSymbolName = (id: string) => SYMBOLS.find(s => s.id === id)?.label || id;
