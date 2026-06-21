@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { getOAuthURL, SYMBOLS } from '@/lib/deriv';
+import { startDerivLogin, SYMBOLS } from '@/lib/deriv';
 import { useStore } from '@/store/useStore';
 import { Zap, TrendingUp, Bot, ShieldCheck, ArrowRight } from 'lucide-react';
 
@@ -97,7 +97,7 @@ export default function LandingPage() {
   }, []);
 
   function handleLogin() {
-    window.location.assign(getOAuthURL());
+    startDerivLogin();
   }
 
   return (

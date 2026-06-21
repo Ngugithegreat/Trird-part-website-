@@ -1,17 +1,29 @@
-export function getOAuthURL(): string {
-  const appId = process.env.NEXT_PUBLIC_DERIV_APP_ID || '108227';
+import { generateCodeVerifier, generateCodeChallenge, generateState } from './pkce';
+
+export async function startDerivLogin(): Promise<void> {
+  const clientId = process.env.NEXT_PUBLIC_DERIV_CLIENT_ID || '';
   const redirectUri =
     process.env.NEXT_PUBLIC_DERIV_REDIRECT_URI ||
     'https://trade.nairobiforextraders.com/callback';
 
+  const codeVerifier = generateCodeVerifier();
+  const codeChallenge = await generateCodeChallenge(codeVerifier);
+  const state = generateState();
+
+  sessionStorage.setItem('pkce_code_verifier', codeVerifier);
+  sessionStorage.setItem('oauth_state', state);
+
   const params = new URLSearchParams({
-    app_id: appId,
-    l: 'en',
-    brand: 'deriv',
+    response_type: 'code',
+    client_id: clientId,
     redirect_uri: redirectUri,
+    scope: 'trade account_manage',
+    state,
+    code_challenge: codeChallenge,
+    code_challenge_method: 'S256',
   });
 
-  return `https://oauth.deriv.com/oauth2/authorize?${params.toString()}`;
+  window.location.assign(`https://auth.deriv.com/oauth2/auth?${params.toString()}`);
 }
 
 export const SYMBOLS = [

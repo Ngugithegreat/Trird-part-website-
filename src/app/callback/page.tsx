@@ -7,68 +7,97 @@ export default function CallbackPage() {
   const [status, setStatus] = useState('Connecting your Deriv account...');
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token1');
-    const account = params.get('acct1');
-    const currency = params.get('cur1');
+    const run = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const returnedState = params.get('state');
+      const error = params.get('error');
 
-    if (!token) {
-      setStatus('No token received. Redirecting to login...');
-      setTimeout(() => router.push('/'), 2500);
-      return;
-    }
+      if (error) {
+        setStatus('Login was cancelled or denied.');
+        setTimeout(() => router.push('/'), 2500);
+        return;
+      }
 
-    localStorage.setItem('deriv_token', token);
-    if (account) localStorage.setItem('deriv_account', account);
-    if (currency) localStorage.setItem('deriv_currency', currency);
+      const storedState = sessionStorage.getItem('oauth_state');
+      const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
 
-    setStatus('Authorizing with Deriv...');
+      if (!code || !returnedState || returnedState !== storedState || !codeVerifier) {
+        setStatus('Security check failed. Please try logging in again.');
+        setTimeout(() => router.push('/'), 2500);
+        return;
+      }
 
-    const appId = process.env.NEXT_PUBLIC_DERIV_APP_ID || '108227';
-    const ws = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${appId}`);
+      setStatus('Exchanging authorization code...');
 
-    const timeout = setTimeout(() => {
-      ws.close();
-      router.push('/dashboard');
-    }, 10000);
+      try {
+        const res = await fetch('/api/auth/exchange', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, codeVerifier }),
+        });
+        const data = await res.json();
 
-    ws.onopen = () => ws.send(JSON.stringify({ authorize: token }));
-
-    ws.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      if (data.msg_type === 'authorize') {
-        clearTimeout(timeout);
-        ws.close();
-        if (data.error) {
-          setStatus('Authorization failed: ' + data.error.message);
+        if (!res.ok || !data.access_token) {
+          setStatus('Authorization failed: ' + (data.error || 'unknown error'));
           setTimeout(() => router.push('/'), 3000);
           return;
         }
-        localStorage.setItem(
-          'deriv_auth',
-          JSON.stringify({
-            token,
-            account: account || data.authorize.loginid,
-            currency: currency || data.authorize.currency,
-            balance: data.authorize.balance,
-            email: data.authorize.email,
-            fullname: data.authorize.fullname,
-          })
-        );
-        setStatus('Success! Loading dashboard...');
-        router.push('/dashboard');
+
+        sessionStorage.removeItem('pkce_code_verifier');
+        sessionStorage.removeItem('oauth_state');
+
+        setStatus('Authorizing with Deriv...');
+
+        const appId = process.env.NEXT_PUBLIC_DERIV_APP_ID || '108227';
+        const ws = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${appId}`);
+
+        const timeout = setTimeout(() => {
+          ws.close();
+          router.push('/dashboard');
+        }, 10000);
+
+        ws.onopen = () => {
+          ws.send(JSON.stringify({ authorize: data.access_token }));
+        };
+
+        ws.onmessage = (e) => {
+          const msg = JSON.parse(e.data);
+          if (msg.msg_type === 'authorize') {
+            clearTimeout(timeout);
+            ws.close();
+            if (msg.error) {
+              setStatus('Authorization failed: ' + msg.error.message);
+              setTimeout(() => router.push('/'), 3000);
+              return;
+            }
+            localStorage.setItem(
+              'deriv_auth',
+              JSON.stringify({
+                token: data.access_token,
+                account: msg.authorize.loginid,
+                currency: msg.authorize.currency,
+                balance: msg.authorize.balance,
+                email: msg.authorize.email,
+                fullname: msg.authorize.fullname,
+              })
+            );
+            setStatus('Success! Loading dashboard...');
+            router.push('/dashboard');
+          }
+        };
+
+        ws.onerror = () => {
+          clearTimeout(timeout);
+          router.push('/dashboard');
+        };
+      } catch (err) {
+        setStatus('Network error. Please try again.');
+        setTimeout(() => router.push('/'), 3000);
       }
     };
 
-    ws.onerror = () => {
-      clearTimeout(timeout);
-      router.push('/dashboard');
-    };
-
-    return () => {
-      clearTimeout(timeout);
-      ws.close();
-    };
+    run();
   }, [router]);
 
   return (
