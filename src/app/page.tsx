@@ -73,6 +73,10 @@ export default function LandingPage() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleLogin = () => {
+    window.location.assign(getLoginURL());
+  };
+
   return (
     <main style={{ 
       fontFamily: 'Inter, sans-serif', 
@@ -135,13 +139,13 @@ export default function LandingPage() {
 
         {/* Nav buttons */}
         <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-          <button onClick={() => window.location.assign(getLoginURL())} style={{
+          <button onClick={handleLogin} style={{
             padding: '7px 18px', background: 'transparent',
             border: '1px solid rgba(255,255,255,0.15)',
             color: '#e8eaf0', borderRadius: 8, fontSize: 13,
             fontWeight: 500, cursor: 'pointer', fontFamily: 'Inter,sans-serif'
           }}>Log In</button>
-          <button onClick={() => window.location.assign(getLoginURL())} style={{
+          <button onClick={handleLogin} style={{
             padding: '7px 18px',
             background: 'linear-gradient(135deg,#00e676,#00b0ff)',
             border: 'none', color: '#000', borderRadius: 8,
@@ -194,7 +198,7 @@ export default function LandingPage() {
           live signals, and automated strategies — built for serious traders.
         </p>
 
-        <button onClick={() => window.location.assign(getLoginURL())} style={{
+        <button onClick={handleLogin} style={{
           display: 'inline-flex', alignItems: 'center', gap: 10,
           padding: '18px 40px',
           background: 'linear-gradient(135deg,#00e676,#00b0ff)',
