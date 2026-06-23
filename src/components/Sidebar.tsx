@@ -27,12 +27,12 @@ const navItems = [
   { icon: TrendingUp, label: 'Manual Trader', href: '/dashboard/trade' },
   { icon: Zap, label: 'Live Signals', href: '/dashboard/signals' },
   { icon: Bot, label: 'Bot Builder', href: '/dashboard/bots' },
-  { icon: Layers, label: 'Bulk Trader', href: '/dashboard/bulk' },
-  { icon: BrainCircuit, label: 'AI Bots', href: '/dashboard/ai' },
-  { icon: Gift, label: 'Free Bots', href: '/dashboard/free' },
-  { icon: Users, label: 'Copy Trader', href: '/dashboard/copy' },
+  { icon: Layers, label: 'Bulk Trader', href: '/dashboard/bulk-trader' },
+  { icon: Rocket, label: 'Apex Bot', href: '/dashboard/apex-bot' },
+  { icon: Gift, label: 'Free Bots', href: '/dashboard/free-bots' },
+  { icon: Users, label: 'Copy Trader', href: '/dashboard/copy-trader' },
   { icon: Search, label: 'Analysis Tools', href: '/dashboard/analysis' },
-  { icon: Rocket, label: 'Speedbot', href: '/dashboard/speed' },
+  { icon: Rocket, label: 'Speedbot', href: '/dashboard/speedbot' },
 ];
 
 export function Sidebar() {
