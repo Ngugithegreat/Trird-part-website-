@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { startDerivLogin } from '@/lib/deriv';
+import { getLoginURL } from '@/lib/deriv';
 
 const SYMBOLS = [
   { s: 'V10', p: 1124.38 }, { s: 'V25', p: 2584.55 },
@@ -135,13 +135,13 @@ export default function LandingPage() {
 
         {/* Nav buttons */}
         <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-          <button onClick={() => startDerivLogin()} style={{
+          <button onClick={() => window.location.assign(getLoginURL())} style={{
             padding: '7px 18px', background: 'transparent',
             border: '1px solid rgba(255,255,255,0.15)',
             color: '#e8eaf0', borderRadius: 8, fontSize: 13,
             fontWeight: 500, cursor: 'pointer', fontFamily: 'Inter,sans-serif'
           }}>Log In</button>
-          <button onClick={() => startDerivLogin()} style={{
+          <button onClick={() => window.location.assign(getLoginURL())} style={{
             padding: '7px 18px',
             background: 'linear-gradient(135deg,#00e676,#00b0ff)',
             border: 'none', color: '#000', borderRadius: 8,
@@ -194,7 +194,7 @@ export default function LandingPage() {
           live signals, and automated strategies — built for serious traders.
         </p>
 
-        <button onClick={() => startDerivLogin()} style={{
+        <button onClick={() => window.location.assign(getLoginURL())} style={{
           display: 'inline-flex', alignItems: 'center', gap: 10,
           padding: '18px 40px',
           background: 'linear-gradient(135deg,#00e676,#00b0ff)',
