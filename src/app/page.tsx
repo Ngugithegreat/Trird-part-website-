@@ -74,7 +74,7 @@ export default function LandingPage() {
   }, []);
 
   const handleLogin = () => {
-    window.location.assign(getLoginURL());
+    window.location.href = getLoginURL();
   };
 
   return (

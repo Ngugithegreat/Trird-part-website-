@@ -1,20 +1,21 @@
-const APP_ID = process.env.NEXT_PUBLIC_DERIV_APP_ID || '108227'
-
 export function getLoginURL(): string {
-  return `https://oauth.deriv.com/oauth2/authorize?app_id=${APP_ID}&l=en&brand=deriv`
+  const appId = process.env.NEXT_PUBLIC_DERIV_APP_ID || '108227'
+  const state = Math.random().toString(36).substring(2) 
+    + Math.random().toString(36).substring(2)
+  return `https://oauth.deriv.com/oauth2/authorize?app_id=${appId}&brand=deriv&redirect=home&state=${state}`
 }
 
 export const SYMBOLS = [
-  { id: 'R_10',     label: 'Volatility 10',       short: 'V10',   pip: 3 },
-  { id: 'R_25',     label: 'Volatility 25',        short: 'V25',   pip: 3 },
-  { id: 'R_50',     label: 'Volatility 50',        short: 'V50',   pip: 2 },
-  { id: 'R_75',     label: 'Volatility 75',        short: 'V75',   pip: 2 },
-  { id: 'R_100',    label: 'Volatility 100',       short: 'V100',  pip: 2 },
-  { id: '1HZ10V',   label: 'Volatility 10 (1s)',   short: 'V10s',  pip: 3 },
-  { id: '1HZ25V',   label: 'Volatility 25 (1s)',   short: 'V25s',  pip: 3 },
-  { id: '1HZ50V',   label: 'Volatility 50 (1s)',   short: 'V50s',  pip: 2 },
-  { id: '1HZ75V',   label: 'Volatility 75 (1s)',   short: 'V75s',  pip: 2 },
-  { id: '1HZ100V',  label: 'Volatility 100 (1s)',  short: 'V100s', pip: 2 },
+  { id: 'R_10',    label: 'Volatility 10',      short: 'V10',   pip: 3 },
+  { id: 'R_25',    label: 'Volatility 25',      short: 'V25',   pip: 3 },
+  { id: 'R_50',    label: 'Volatility 50',      short: 'V50',   pip: 2 },
+  { id: 'R_75',    label: 'Volatility 75',      short: 'V75',   pip: 2 },
+  { id: 'R_100',   label: 'Volatility 100',     short: 'V100',  pip: 2 },
+  { id: '1HZ10V',  label: 'Volatility 10 (1s)', short: 'V10s',  pip: 3 },
+  { id: '1HZ25V',  label: 'Volatility 25 (1s)', short: 'V25s',  pip: 3 },
+  { id: '1HZ50V',  label: 'Volatility 50 (1s)', short: 'V50s',  pip: 2 },
+  { id: '1HZ75V',  label: 'Volatility 75 (1s)', short: 'V75s',  pip: 2 },
+  { id: '1HZ100V', label: 'Volatility 100 (1s)', short: 'V100s', pip: 2 },
 ]
 
 export const GRANULARITIES = [
