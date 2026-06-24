@@ -62,7 +62,7 @@ export default function TradePage() {
             </div>
           </div>
           
-          <TradingChart />
+          <TradingChart symbol={currentSymbol} granularity={currentGranularity} />
 
           {/* Tick Feed */}
           <div className="bg-[#0e1420] rounded-xl border border-white/5 flex-1 min-h-[300px] flex flex-col">
