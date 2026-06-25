@@ -24,9 +24,10 @@ function CallbackContent() {
         for (let i = 1; i <= 10; i++) {
           const loginid = searchParams.get(`acct${i}`)
           const token = searchParams.get(`token${i}`)
+          const currency = searchParams.get(`cur${i}`) || 'USD'
           if (!loginid || !token) break
           const is_virtual = loginid.startsWith('VRTC') || loginid.startsWith('VR') || loginid.startsWith('VRW')
-          accounts.push({ loginid: loginid.toUpperCase(), token, is_virtual })
+          accounts.push({ loginid: loginid.toUpperCase(), token, is_virtual, currency })
         }
 
         if (accounts.length === 0) {
@@ -61,7 +62,7 @@ function CallbackContent() {
           balance: authData.balance,
           email: authData.email,
           fullname: authData.fullname,
-          all_accounts: accounts,
+          all_accounts: accounts, // <-- this is the key addition
         }))
         localStorage.setItem('deriv_token', chosen.token)
         localStorage.setItem('deriv_loginid', authData.loginid)

@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { useStore } from '@/store/useStore';
 import { useDerivWS } from '@/hooks/useDerivWS';
 import { SYMBOLS } from '@/lib/deriv';
+import AccountSwitcher from '@/components/AccountSwitcher'
+import DepositWithdraw from '@/components/DepositWithdraw'
 import { 
   LayoutDashboard, TrendingUp, Bot, Layers, Zap, Gift, Users, Search, Rocket, Settings, Bell, LogOut, ChevronLeft, ChevronRight, Menu 
 } from 'lucide-react';
@@ -28,14 +30,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
-  const { auth, clearAuth, connected, allTicks } = useStore();
+  const { auth, clearAuth, connected, allTicks, setAuth } = useStore();
+  const [balance, setBalance] = useState<number | null>(auth?.balance ?? null);
+  const [currency, setCurrency] = useState<string>(auth?.currency ?? 'USD');
   
   useDerivWS();
+
+  useEffect(() => {
+    if (auth) {
+      setBalance(auth.balance);
+      setCurrency(auth.currency);
+    }
+  }, [auth]);
 
   const handleLogout = () => {
     clearAuth();
     router.push('/');
   };
+
+  const initials = auth?.fullname?.split(' ').map(n => n[0]).join('').slice(0, 2) || 'U';
 
   return (
     <AuthGuard>
@@ -60,18 +73,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1 bg-[#151d2e] rounded-full border border-white/5 font-tabular">
-              <span className="text-[#00e676] font-bold text-xs">
-                {auth?.currency} {auth?.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-              </span>
-            </div>
-            <button className="p-2 text-[#8892a4] hover:text-white transition-colors relative">
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-[#ff1744] rounded-full" />
-            </button>
-            <div className="w-8 h-8 bg-[#1c2640] rounded-full flex items-center justify-center font-bold text-xs text-[#e8eaf0]">
-              {auth?.fullname?.charAt(0) || 'U'}
+          {/* Right section of navbar */}
+          <div style={{ display:'flex',alignItems:'center',gap:10,flexShrink:0 }}>
+            <DepositWithdraw />
+            {balance !== null && (
+              <div style={{ padding:'5px 10px',background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)',borderRadius:8,textAlign:'right' }}>
+                <div style={{ fontSize:13,fontWeight:700,color:'#e8eaf0',fontVariantNumeric:'tabular-nums' }}>{balance.toFixed(2)}</div>
+                <div style={{ fontSize:9,color:'#4a5568',textTransform:'uppercase' }}>{currency}</div>
+              </div>
+            )}
+            <AccountSwitcher onSwitch={(acc)=>{ 
+              const newAuth = { ...auth!, balance: acc.balance ?? 0, currency: acc.currency, account: acc.loginid, token: acc.token };
+              setAuth(newAuth);
+              setBalance(acc.balance ?? null); 
+              setCurrency(acc.currency || 'USD') 
+            }} />
+            <div style={{ width:32,height:32,borderRadius:'50%',background:'linear-gradient(135deg,rgba(0,230,118,0.2),rgba(0,176,255,0.2))',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,color:'#00e676',border:'1px solid rgba(0,230,118,0.2)',flexShrink:0 }}>
+              {initials}
             </div>
             <button onClick={handleLogout} className="p-2 text-[#8892a4] hover:text-[#ff1744] transition-colors">
               <LogOut className="w-4 h-4" />

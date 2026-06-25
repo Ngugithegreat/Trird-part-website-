@@ -4,7 +4,12 @@ import { useEffect, useState, useRef } from 'react'
 
 const Chart = dynamic(() => import('@/components/TradeChart'), {
   ssr: false,
-  loading: () => <div style={{ flex: 1, background: '#0d1117', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 32, height: 32, border: '2px solid #00e676', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style></div>
+  loading: () => (
+    <div style={{ flex:1,background:'#0d1117',display:'flex',alignItems:'center',justifyContent:'center' }}>
+      <div style={{ width:32,height:32,border:'2px solid #00e676',borderTopColor:'transparent',borderRadius:'50%',animation:'spin 0.8s linear infinite' }}/>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  )
 })
 
 const SYMS = [
@@ -134,7 +139,7 @@ export default function TradePage() {
           {TFS.map(tf => <button key={tf.v} onClick={() => setGran(tf.v)} style={pill(gran === tf.v)}>{tf.l}</button>)}
           {price && <span style={{ marginLeft: 'auto', fontSize: 15, fontWeight: 700, color: '#e8eaf0', fontVariantNumeric: 'tabular-nums' }}>{price.toFixed(pip)}</span>}
         </div>
-        {/* Chart fills all remaining space */}
+        {/* Chart fills ALL remaining space - no tick feed */}
         <div style={{ flex: 1, minHeight: 0 }}>
           <Chart symbol={sym} granularity={gran} />
         </div>
