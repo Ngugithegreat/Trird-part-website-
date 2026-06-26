@@ -9,7 +9,7 @@ export default function BotBuilderPage() {
     if (auth) {
       try {
         const { token, account } = JSON.parse(auth)
-        // Pass token so Deriv Bot auto-logs in
+        // Pass token so Deriv Bot auto-logs in — exactly like DBTraders does
         setSrc(`https://dbot.deriv.com?acct1=${account}&token1=${token}&cur1=USD`)
       } catch { setSrc('https://dbot.deriv.com') }
     } else {
