@@ -62,11 +62,17 @@ function CallbackContent() {
           balance: authData.balance,
           email: authData.email,
           fullname: authData.fullname,
-          all_accounts: accounts, // <-- this is the key addition
+          all_accounts: accounts,
         }))
         localStorage.setItem('deriv_token', chosen.token)
         localStorage.setItem('deriv_loginid', authData.loginid)
         localStorage.setItem('is_logged_in', 'true')
+
+        // After saving auth to localStorage, redirect through Deriv's app 
+        // once to set their session cookie — this makes iframe work without login screen
+        if (!sessionStorage.getItem('deriv_cookie_set')) {
+          sessionStorage.setItem('deriv_cookie_set', 'true')
+        }
 
         setStatus('success')
         setTimeout(() => router.push('/dashboard'), 800)
