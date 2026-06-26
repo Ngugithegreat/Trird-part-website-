@@ -43,7 +43,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setCurrency(data.currency || 'USD')
   }, [router])
 
-  // Live price ticker
   useEffect(() => {
     const ws = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${appId}`)
     ws.onopen = () => { setConnected(true); TICKER_SYMS.forEach(s => ws.send(JSON.stringify({ ticks: s.id, subscribe: 1 }))) }
@@ -59,7 +58,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return () => ws.close()
   }, [appId])
 
-  // Balance live update
   useEffect(() => {
     if (!auth?.token) return
     const ws = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${appId}`)
@@ -89,9 +87,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#06080f', fontFamily: 'Inter,sans-serif', overflow: 'hidden' }}>
 
-      {/* ── TOP BAR 1: Logo + ticker + balance + account ── */}
       <div style={{ height: 48, display: 'flex', alignItems: 'center', padding: '0 16px', gap: 12, background: '#0d1117', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, zIndex: 100 }}>
-        {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, cursor: 'pointer' }} onClick={() => router.push('/dashboard')}>
           <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg,#00e676,#00b0ff)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 15, color: '#000' }}>N</div>
           <div>
@@ -100,13 +96,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </div>
 
-        {/* Reports link */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '4px 10px', borderRadius: 7, border: '1px solid rgba(255,255,255,0.07)', cursor: 'pointer', flexShrink: 0 }} onClick={() => router.push('/dashboard')}>
           <span style={{ fontSize: 12 }}>📋</span>
           <span style={{ fontSize: 12, color: '#8892a4' }}>Reports</span>
         </div>
 
-        {/* Live ticker */}
         <div style={{ flex: 1, overflow: 'hidden', position: 'relative', minWidth: 0 }}>
           <div style={{ display: 'flex', animation: 'ticker 30s linear infinite', whiteSpace: 'nowrap', width: 'max-content' }}>
             {[...TICKER_SYMS, ...TICKER_SYMS].map((s, i) => {
@@ -122,10 +116,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </div>
 
-        {/* Right side */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
           <DepositWithdraw />
-          {/* Balance */}
           {balance !== null && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8 }}>
               <div style={{ width: 8, height: 8, borderRadius: '50%', background: connected ? '#00e676' : '#4a5568', animation: connected ? 'pulse 2s infinite' : 'none' }} />
@@ -140,7 +132,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </div>
 
-      {/* ── TOP BAR 2: Horizontal nav tabs ── */}
       <div style={{ height: 44, display: 'flex', alignItems: 'center', background: '#0a0c12', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, overflowX: 'auto', scrollbarWidth: 'none', paddingLeft: 4 }}>
         {NAV.map(item => {
           const active = path === item.href || (item.href !== '/dashboard' && path.startsWith(item.href))
@@ -167,15 +158,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         })}
       </div>
 
-      {/* ── MAIN CONTENT ── */}
       <main style={{ flex: 1, overflow: 'auto', minWidth: 0, minHeight: 0 }}>
         {children}
       </main>
+
+      {/* Floating AI Scanner button - appears on all pages */}
+      <div
+        onClick={() => router.push('/dashboard/bulk-trader')}
+        style={{
+          position: 'fixed', bottom: 24, right: 24, zIndex: 500,
+          width: 56, height: 56, borderRadius: '50%',
+          background: 'linear-gradient(135deg, #1a237e, #2979ff)',
+          border: '2px solid rgba(100,149,237,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', fontSize: 22,
+          boxShadow: '0 0 24px rgba(41,121,255,0.5), 0 4px 20px rgba(0,0,0,0.4)',
+          animation: 'glow 2s ease-in-out infinite',
+          transition: 'transform 0.15s',
+        }}
+        title="AI Scanner"
+        onMouseEnter={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1.1)'}
+        onMouseLeave={e => (e.currentTarget as HTMLElement).style.transform = 'scale(1)'}
+      >
+        🤖
+      </div>
 
       <style>{`
         @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
         @keyframes spin { to{transform:rotate(360deg)} }
+        @keyframes glow {
+          0%, 100% { box-shadow: 0 0 24px rgba(41,121,255,0.5), 0 4px 20px rgba(0,0,0,0.4); }
+          50% { box-shadow: 0 0 40px rgba(41,121,255,0.8), 0 4px 20px rgba(0,0,0,0.4); }
+        }
         ::-webkit-scrollbar { width: 4px; height: 4px }
         ::-webkit-scrollbar-track { background: transparent }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px }
