@@ -20,8 +20,8 @@ const NAV = [
 const TICKER_SYMS = [
   { id: 'R_10', l: 'V10', pip: 3 }, { id: 'R_25', l: 'V25', pip: 3 },
   { id: 'R_50', l: 'V50', pip: 2 }, { id: 'R_75', l: 'V75', pip: 2 },
-  { id: 'R_100',   l: 'V100',  pip: 2 }, { id: '1HZ10V',  l: 'V10s',  pip: 3 },
-  { id: '1HZ25V',  l: 'V25s',  pip: 3 }, { id: '1HZ50V',  l: 'V50s',  pip: 2 },
+  { id: 'R_100', l: 'V100', pip: 2 }, { id: '1HZ10V', l: 'V10s', pip: 3 },
+  { id: '1HZ25V', l: 'V25s', pip: 3 }, { id: '1HZ50V', l: 'V50s', pip: 2 },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

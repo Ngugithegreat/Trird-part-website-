@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'navigation'
+import { useRouter } from 'next/navigation'
 
 const QUICK = [
   { href: '/dashboard/bots', icon: '🤖', title: 'Bot Builder', desc: 'Build and run automated trading bots', color: '#00e676' },
